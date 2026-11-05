@@ -1,0 +1,40 @@
+export const channels = [
+ { id: 1, name: 'Micrófono principal', short: 'MIC PRINCIPAL', type: 'Voz principal', level: -12, icon: 'mic' },
+ { id: 2, name: 'Voces', short: 'VOCES', type: 'Coros · Grupo', level: -18, icon: 'mic' },
+ { id: 3, name: 'Teclado', short: 'TECLADO', type: 'Instrumento · Estéreo', level: -16, icon: 'keys' },
+ { id: 4, name: 'Guitarra', short: 'GUITARRA', type: 'Instrumento · Mono', level: -14, icon: 'guitar' },
+ { id: 5, name: 'Batería', short: 'BATERÍA', type: 'Percusión · Grupo', level: -10, icon: 'drums' },
+ { id: 6, name: 'Salida principal', short: 'MAIN OUT', type: 'Master · Estéreo', level: -8, icon: 'speaker' },
+];
+export const problems = [
+ { key: 'clipping', title: 'Clipping detectado', channel: 6, severity: 'critical', description: 'La salida principal supera el margen disponible en el escenario de demostración.', recommendation: 'Reduce la ganancia de salida entre 3 y 6 dB y revisa el nivel de los canales más altos.' },
+ { key: 'feedback', title: 'Posible acople', channel: 1, severity: 'critical', description: 'Pico sostenido simulado alrededor de 2.5 kHz en el micrófono principal.', recommendation: 'Aleja el micrófono del monitor y atenúa suavemente la banda de 2.5 kHz.' },
+ { key: 'silence', title: 'Ausencia de señal', channel: 3, severity: 'warning', description: 'El teclado no presenta señal en este escenario de demostración.', recommendation: 'Verifica el cable, la salida del instrumento y que el canal no esté silenciado.' },
+ { key: 'vocal', title: 'Saturación vocal', channel: 2, severity: 'warning', description: 'Las voces presentan picos simulados por encima del nivel recomendado.', recommendation: 'Reduce la ganancia de entrada de las voces y revisa la distancia a los micrófonos.' },
+ { key: 'loud', title: 'Volumen excesivo', channel: 5, severity: 'warning', description: 'La batería sobresale respecto al resto de la mezcla simulada.', recommendation: 'Baja el nivel del grupo de batería entre 2 y 4 dB y vuelve a evaluar el balance.' },
+];
+const channelDescriptions = ['Voz del encargado', 'Cantantes', 'Instrumento de teclas', 'Instrumento de cuerda', 'Percusión', 'Sonido que llega a las bocinas'];
+channels.forEach((channel, index) => { channel.type = channelDescriptions[index]; });
+const simpleProblems = {
+ clipping: { title: 'El sonido de las bocinas está demasiado fuerte', description: 'El sonido supera el límite y podría escucharse roto o distorsionado. Esto se conoce como saturación o clipping.', cause: 'Varios canales pueden estar demasiado altos al mismo tiempo.', steps: ['Baja un poco el nivel de la salida principal en la consola.', 'Revisa si algún instrumento sigue demasiado alto.', 'Vuelve a escuchar la mezcla completa a un volumen cómodo.'], verification: 'En un equipo real, escucha si desaparece la distorsión y comprueba que el indicador no llegue al rojo.' },
+ feedback: { title: 'El micrófono podría producir un silbido', description: 'Un sonido agudo puede repetirse entre el micrófono y las bocinas. A esto se le llama acople.', cause: 'El micrófono puede estar muy cerca de una bocina o apuntando hacia ella.', steps: ['Baja un poco el volumen del micrófono.', 'Aleja el micrófono de las bocinas y evita apuntar hacia ellas.', 'Habla de nuevo y sube el nivel poco a poco solo si es necesario.'], verification: 'En un equipo real, comprueba que puedas hablar sin escuchar el silbido.' },
+ silence: { title: 'No llega sonido del teclado', description: 'El canal del teclado no muestra actividad en este escenario.', cause: 'Puede haber un cable suelto, el instrumento apagado o un canal silenciado.', steps: ['Comprueba que el teclado esté encendido y tenga volumen.', 'Revisa que el cable esté conectado al teclado y a la consola.', 'Verifica que el canal no esté silenciado y toca algunas notas.'], verification: 'En un equipo real, comprueba que se mueva el medidor y que el teclado se escuche por las bocinas.' },
+ vocal: { title: 'Las voces llegan demasiado fuertes', description: 'La voz llega con demasiado nivel y puede escucharse distorsionada.', cause: 'El nivel de entrada puede estar muy alto o los cantantes demasiado cerca del micrófono.', steps: ['Baja un poco el nivel de entrada de las voces en la consola.', 'Pide a los cantantes mantener una distancia cómoda del micrófono.', 'Pídeles cantar una parte fuerte y escucha otra vez.'], verification: 'En un equipo real, verifica que las voces se escuchen claras y que su medidor no llegue al rojo.' },
+ loud: { title: 'La batería tapa a los demás', description: 'La batería suena más fuerte que las voces y el resto de los instrumentos.', cause: 'El volumen de la batería puede estar demasiado alto en la mezcla.', steps: ['Baja un poco el nivel de la batería en la consola.', 'Escucha a todo el grupo tocando al mismo tiempo.', 'Ajusta hasta que puedas entender las voces y distinguir los instrumentos.'], verification: 'En un equipo real, comprueba que puedas entender las palabras sin que la batería las cubra.' },
+};
+simpleProblems.clipping.title = 'La salida principal podría sonar distorsionada';
+simpleProblems.clipping.description = 'En este ejemplo, la señal que se enviaría a las bocinas supera el límite digital y podría escucharse rota. No se está midiendo qué tan fuerte suenan las bocinas en la sala.';
+simpleProblems.clipping.steps = ['Busca en la consola el control de salida principal, que reúne las voces y los instrumentos.', 'Baja ese control un poco. Si un canal también indica un problema, revisa su propia guía.', 'Pide al grupo tocar de nuevo y escucha si las voces y los instrumentos se entienden con claridad.'];
+simpleProblems.vocal.steps[0] = 'Busca el canal de las voces en la consola. Baja un poco su control de entrada (a veces llamado ganancia o GAIN). Este control ajusta cuánto sonido recibe la consola del micrófono.';
+simpleProblems.loud.steps[0] = 'Busca el canal o grupo de batería en la consola y baja un poco su control de nivel, que ajusta cuánto se escucha en la mezcla.';
+simpleProblems.silence.steps[2] = 'Busca el canal del teclado. Comprueba que el botón de silencio (MUTE, si aparece en inglés) no esté activado y toca algunas notas.';
+const technicalDescriptions = {
+ clipping: 'Clipping significa que una señal digital supera su límite y se recorta, lo que puede producir distorsión. 0 dBFS es el límite digital de referencia; no representa el volumen acústico de las bocinas.',
+ feedback: 'Feedback o acople es un bucle: el micrófono vuelve a captar el sonido de una bocina y lo amplifica repetidamente. Puede producir un silbido. Frecuencia describe si el sonido es grave o agudo y se expresa en Hz.',
+ silence: 'Ausencia de señal significa que el canal no muestra actividad digital. El mínimo del medidor de ejemplo es −60 dBFS; no confirma que el instrumento real esté apagado.',
+ vocal: 'Saturación vocal significa que la señal de las voces tiene demasiado nivel y puede distorsionarse. La ganancia ajusta el nivel de entrada. Los picos son los momentos con mayor nivel digital.',
+ loud: 'El balance es la relación entre los niveles de las voces y los instrumentos. Un nivel digital mayor no permite deducir el volumen acústico real de la batería en la sala.',
+};
+problems.forEach(problem => { Object.assign(problem, simpleProblems[problem.key]); problem.recommendation = problem.steps[0]; problem.technical = technicalDescriptions[problem.key]; problem.channelName = channels.find(channel => channel.id === problem.channel).name; });
+export function makeIncident(problem, offset = 0) { return { ...problem, id: globalThis.crypto.randomUUID(), date: new Date(Date.now() - offset).toISOString(), resolved: false }; }
+export function readHistory() { try { const data = JSON.parse(localStorage.getItem('audicaz-history-v1')); if (Array.isArray(data) && data.every(x => x && typeof x.id === 'string' && problems.some(p => p.key === x.key) && Number.isFinite(Date.parse(x.date)))) return data.map(x => ({...x, ...problems.find(p => p.key === x.key)})); } catch {} return [makeIncident(problems[3], 180000), makeIncident(problems[4], 420000)]; }

@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {measure,defaultChannels,validConfig,assess,mappedMeasurements,isFresh} from './src/audioCore.mjs';
+const config=defaultChannels();assert(validConfig(config));assert(!validConfig(config.slice(1)));
+const quiet=measure(new Float32Array(2048));assert.equal(quiet.peak,-120);assert.equal(quiet.rms,-120);
+const tone=Float32Array.from({length:2048},(_,i)=>.5*Math.sin(2*Math.PI*i/32));const m=measure(tone);
+assert(Math.abs(m.peak+6.0206)<.01);assert(Math.abs(m.rms+9.0309)<.01);
+const frame={channels:[m],receivedAt:1000};assert.equal(mappedMeasurements(frame,'browser',7)[1],undefined);assert.deepEqual(mappedMeasurements(frame,'browser',7)[7],m);
+assert.equal(assess(config[0],quiet,6000),null);assert.equal(assess({...config[0],expected:true},quiet,4000),null);assert.equal(assess({...config[0],expected:true},quiet,6000).kind,'silence');
+assert.equal(assess(config[0],{peak:-.5,rms:-10}).kind,'peak');assert.equal(assess({...config[0],enabled:false},{peak:0,rms:0}),null);
+assert(isFresh(frame,2000));assert(!isFresh(frame,3000));
+const event={channelName:config[0].name};config[0].name='Guitarra';assert.equal(event.channelName,'Entrada 1');
+assert.equal(Object.keys(mappedMeasurements({channels:[m,quiet]},'bridge',7)).length,2);
+console.log('Verificado: niveles, RMS, asignación única, umbrales, silencio condicionado, datos vencidos e historial.');

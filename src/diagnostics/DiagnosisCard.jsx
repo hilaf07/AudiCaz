@@ -1,0 +1,10 @@
+import React from 'react';
+import { ClipboardCheck, Radio, TriangleAlert } from 'lucide-react';
+import { useLearningMode } from '../LearningMode';
+
+export default function DiagnosisCard({ session }) {
+  const {technical}=useLearningMode();
+  const {diagnosis,evidence}=session;
+  if(!diagnosis) return null;
+  return <section className="diagnosis-card" aria-label="Posibles causas y comprobaciones"><div className="diagnosis-heading"><ClipboardCheck size={22} aria-hidden="true"/><div><span className="eyebrow">ORIENTACIÓN POR REGLAS · SIN CONFIRMAR</span><h2>Qué podría estar pasando</h2></div></div><p>{diagnosis.summary}</p><div className="diagnosis-evidence"><Radio size={18} aria-hidden="true"/><div><strong>Datos disponibles para esta consulta</strong><p>{evidence.text}</p>{technical && evidence.reading && <p>{evidence.kind==='real'?'Pico digital capturado':'Nivel digital simulado'}: {evidence.reading.level.toFixed(1)} dBFS. No mide el volumen de las bocinas en la sala.</p>}<small>Consulta de datos: {new Date(evidence.date).toLocaleString('es-CR')}{evidence.kind==='real'?' · Captura guardada':evidence.paused?' · Simulación pausada':''}</small>{evidence.relatedAlerts.length>0 && <p>En la demostración hay {evidence.relatedAlerts.length} {evidence.relatedAlerts.length===1?'alerta de ejemplo de este canal':'alertas de ejemplo de este canal'}. Son independientes del problema real que describes.</p>}</div></div><h3>Posibles causas y cómo distinguirlas</h3><ol className="possible-causes">{diagnosis.causes.map(cause=><li key={cause.title}><h4>{cause.title} <span>Posibilidad</span></h4><p>{cause.why}</p><p><b>Cómo comprobarlo:</b> {cause.check}</p></li>)}</ol><h3>Qué revisar primero</h3><p>{diagnosis.review}</p><h3>Pasos recomendados para {session.channel.name}</h3><ol className="diagnostic-steps">{diagnosis.steps.map((step,i)=><li key={i}>{step}</li>)}</ol><h3>Cómo comprobar si funcionó</h3><p>{diagnosis.verification}</p><div className="diagnostic-caution"><TriangleAlert size={18} aria-hidden="true"/><p>{diagnosis.caution}</p></div></section>;
+}

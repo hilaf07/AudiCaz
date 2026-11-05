@@ -1,0 +1,12 @@
+node_modules/
+.venv*/
+__pycache__/
+*.pyc
+dist/
+demo_web/
+.netlify/
+test-results/
+playwright-report/
+.env
+.env.*
+!.env.example
